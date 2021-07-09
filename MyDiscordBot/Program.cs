@@ -22,6 +22,7 @@ namespace MyDiscordBot
 
             services.AddScoped<ITokenService, FileTokenService>();
             services.AddScoped<IStockCrawler, YahooStockCrawler>(sp => new YahooStockCrawler(crawlerUrl));
+            services.AddSingleton<Bot>();
             services.AddTransient<App>();
             return services;
         }

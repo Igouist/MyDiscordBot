@@ -8,7 +8,16 @@ namespace MyDiscordBot.TokenGetter
     /// </summary>
     public class FileTokenService : ITokenService
     {
-        private readonly string _filePath = @"D:\DiscordToken.txt";
+        private readonly string _filePath = "";
+
+        /// <summary>
+        /// Init
+        /// </summary>
+        /// <param name="filePath"></param>
+        public FileTokenService(string filePath)
+        {
+            this._filePath = filePath;
+        }
 
         /// <summary>
         /// 取得令牌

@@ -1,4 +1,5 @@
 ﻿using DSharpPlus;
+using MyDiscordBot.Crawler;
 using MyDiscordBot.TokenGetter;
 using System;
 using System.Threading.Tasks;
@@ -10,13 +11,17 @@ namespace MyDiscordBot
     /// </summary>
     public class App
     {
+        private IStockCrawler _crawler;
         private ITokenService _tokenService;
 
         /// <summary>
         /// Init
         /// </summary>
-        public App(ITokenService tokenService)
+        public App(
+            IStockCrawler crawler,
+            ITokenService tokenService)
         {
+            this._crawler = crawler;
             this._tokenService = tokenService;
         }
 
@@ -51,7 +56,7 @@ namespace MyDiscordBot
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        static async Task MainAsync(string token)
+        private async Task MainAsync(string token)
         {
             // 參考資料: https://dsharpplus.github.io/articles/basics/first_bot.html
             var discord = new DiscordClient(new DiscordConfiguration()
@@ -62,9 +67,30 @@ namespace MyDiscordBot
 
             discord.MessageCreated += async (s, e) =>
             {
-                if (e.Message.Content.ToLower().StartsWith("test"))
+                if (e.Message.Content.ToLower().StartsWith("getstock"))
                 {
-                    await e.Message.RespondAsync("測你娘啦");
+                    var content = e.Message.Content;
+                    var inputs = content.Split(':');
+                    
+                    if (inputs.Length > 1 && Int16.TryParse(inputs[1], out var idx))
+                    {
+                        var stock = await this._crawler.Fetch(idx);
+                        var rn = Environment.NewLine;
+
+                        var message =
+                            $"名稱: {stock.Name}{rn}" +
+                            $"成交: {stock.FinalPrice}{rn}" +
+                            $"買進: {stock.BuyPrice}{rn}" +
+                            $"賣出: {stock.SellPrice}{rn}" +
+                            $"漲跌: {stock.UpDown.Trim()}{rn}" +
+                            $"張數: {stock.Lot}{rn}" +
+                            $"昨收: {stock.YesterdayPrice}{rn}" +
+                            $"開盤: {stock.OpeningPrice}{rn}" +
+                            $"最高: {stock.HighestPrice}{rn}" +
+                            $"最低: {stock.LowestPrice}{rn}";
+
+                        await e.Message.RespondAsync(message);
+                    }
                 }
             };
 

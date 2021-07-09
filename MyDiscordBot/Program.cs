@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using MyDiscordBot.Crawler;
 using MyDiscordBot.TokenGetter;
 using System.Threading.Tasks;
 
@@ -17,9 +18,11 @@ namespace MyDiscordBot
 
         static ServiceCollection ConfigureServices(ServiceCollection services)
         {
-            services.AddScoped<ITokenService, FileTokenService>();
-            services.AddTransient<App>();
+            var crawlerUrl = "https://tw.stock.yahoo.com/q/q";
 
+            services.AddScoped<ITokenService, FileTokenService>();
+            services.AddScoped<IStockCrawler, YahooStockCrawler>(sp => new YahooStockCrawler(crawlerUrl));
+            services.AddTransient<App>();
             return services;
         }
     }

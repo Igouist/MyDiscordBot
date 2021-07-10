@@ -39,6 +39,10 @@ namespace MyDiscordBot
             discord.MessageCreated += FetchStockInfo;
 
             await discord.ConnectAsync();
+
+            //var channel = await discord.GetChannelAsync(0);
+            //await channel.SendMessageAsync("這是一封測試訊息");
+
             await Task.Delay(-1);
         }
 

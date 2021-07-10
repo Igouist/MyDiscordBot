@@ -4,6 +4,8 @@
 
 想到什麼就加什麼試試看的無情測試機器，現在只有喊神秘數字就給資訊的小功能。
 
+![](https://i.imgur.com/Ax9iedt.png)
+
 ## 參考資料
 
 - Discord Bot 申請
